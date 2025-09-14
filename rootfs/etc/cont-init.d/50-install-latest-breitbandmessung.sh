@@ -16,8 +16,11 @@ fi
 # Otherwiese install breitbandmessung-dektop ...
 echo "Installing Version $APP_VERSION (sha256:$APP_SHA256SUM)"
 
-# Download latest breitbandmessung-app
-wget "https://download.breitbandmessung.de/bbm/Breitbandmessung-$APP_VERSION-linux.deb"
+# Download latest breitbandmessung-app (use system CA bundle)
+curl --fail --show-error --location \
+    --cacert /etc/ssl/certs/ca-certificates.crt \
+    --output "Breitbandmessung-$APP_VERSION-linux.deb" \
+    "https://download.breitbandmessung.de/bbm/Breitbandmessung-$APP_VERSION-linux.deb"
 echo "$APP_SHA256SUM  Breitbandmessung-$APP_VERSION-linux.deb" | sha256sum -c
 retVal=$?
 if [ $retVal -ne 0 ]; then
