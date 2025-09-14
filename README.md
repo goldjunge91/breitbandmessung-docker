@@ -1,4 +1,26 @@
 # Breitbandmessung.de Docker Container
+<!-- <> -->
+- [Breitbandmessung.de Docker Container](#breitbandmessungde-docker-container)
+  - [Tags](#tags)
+  - [Deploy via docker run](#deploy-via-docker-run)
+  - [Deploy via docker-compose](#deploy-via-docker-compose)
+  - [Deploy as Portainer Stack](#deploy-as-portainer-stack)
+  - [Automated Speedtesting](#automated-speedtesting)
+    - [Setup breitbandmessung.de](#setup-breitbandmessungde)
+    - [Start automation via GUI (easy method)](#start-automation-via-gui-easy-method)
+    - [Start automation via terminal (safe, fallback method)](#start-automation-via-terminal-safe-fallback-method)
+    - [During the process](#during-the-process)
+  - [Support for ARM-Architecture (Raspberry Pi)](#support-for-arm-architecture-raspberry-pi)
+  - [Manually Building the Container (for development purposes)](#manually-building-the-container-for-development-purposes)
+  - [Local testing with act](#local-testing-with-act)
+    - [Prerequisites](#prerequisites)
+    - [Option A: Secrets file (recommended)](#option-a-secrets-file-recommended)
+    - [Option B: PowerShell one‑liner (Windows)](#option-b-powershell-oneliner-windows)
+    - [Option C: Bash/WSL one‑liners (Linux/macOS/WSL)](#option-c-bashwsl-oneliners-linuxmacoswsl)
+    - [Notes](#notes)
+    - [Troubleshooting](#troubleshooting)
+  - [Additional Notes](#additional-notes)
+
 
 Setup the container in these five steps:
 
@@ -13,9 +35,9 @@ Setup the container in these five steps:
 
 | Registry | Image | Tag | Build |
 |:------------------:|:------------------:|:--------------:|:-----------------:|
-| [Docker-Hub](https://hub.docker.com/r/fabianbees/breitbandmessung/tags) | fabianbees/breitbandmessung | latest | ![pipeline status](https://gitlab.fabianbees.de/fabianbees/breitbandmessung-docker/badges/master/pipeline.svg) |
-| [Github (ghcr.io)](https://github.com/fabianbees/breitbandmessung-docker/pkgs/container/breitbandmessung-docker/versions?filters%5Bversion_type%5D=tagged) | ghcr.io/fabianbees/breitbandmessung-docker | latest | [![Build and Publish Docker Image](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=master)](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
-| [Github (ghcr.io)](https://github.com/fabianbees/breitbandmessung-docker/pkgs/container/breitbandmessung-docker/versions?filters%5Bversion_type%5D=tagged) | ghcr.io/fabianbees/breitbandmessung-docker | staging | [![Build and Publish Docker Image](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=staging)](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
+| [Docker-Hub](https://hub.docker.com/r/goldjunge491/breitbandmessung/tags) | goldjunge91/breitbandmessung | latest | [![Build and Publish Docker Image](https://github.com/goldjunge91/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=master)](https://github.com/goldjunge91/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
+| [Github (ghcr.io)](https://github.com/goldjunge91/breitbandmessung-docker/pkgs/container/breitbandmessung-docker/versions?filters%5Bversion_type%5D=tagged) | ghcr.io/goldjunge91/breitbandmessung-docker | latest | [![Build and Publish Docker Image](https://github.com/goldjunge91/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=master)](https://github.com/goldjunge91/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
+| [Github (ghcr.io)](https://github.com/goldjunge91/breitbandmessung-docker/pkgs/container/breitbandmessung-docker/versions?filters%5Bversion_type%5D=tagged) | ghcr.io/goldjunge91/breitbandmessung-docker | staging | [![Build and Publish Docker Image](https://github.com/goldjunge91/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=staging)](https://github.com/goldjunge91/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
 
 ## Deploy via docker run
 
@@ -37,7 +59,7 @@ Appdata for the Breitbandmessung Desktop App lives in the following directory (i
 Deploy container via docker-compose v3 schema:
 
 ```bash
-git clone https://github.com/fabianbees/breitbandmessung-docker.git
+git clone https://github.com/goldjunge91/breitbandmessung-docker.git
 
 cd breitbandmessung-docker
 
@@ -48,7 +70,7 @@ docker compose up
 version: "3.8"
 services:
   breitband-desktop:
-    image: fabianbees/breitbandmessung:latest
+  image: goldjunge491/breitbandmessung:latest
     container_name: breitband-desktop
     environment:
       - TZ=Europe/Berlin
@@ -118,12 +140,75 @@ You can also build the docker container localy for development.
 You can do this with the following commands:
 
 ```bash
-git clone https://github.com/fabianbees/breitbandmessung-docker.git
+git clone https://github.com/goldjunge91/breitbandmessung-docker.git
 
 cd breitbandmessung-docker
 
 docker build -t breitband:latest .
 ```
+
+## Local testing with act
+
+Run GitHub Actions locally with act to iterate quickly on workflow changes without pushing commits.
+act supports passing secrets via environment variables or a secrets file, which is the safest way to provide a token locally.
+
+### Prerequisites
+
+- Docker and act installed locally.
+- GitHub CLI authenticated; gh auth status --show-token prints a token.
+
+### Option A: Secrets file (recommended)
+
+Create a .secrets file in the repo root and load it with --secret-file to avoid exposing tokens in process args.
+The secrets file uses .env format (one KEY=VALUE per line).
+
+```text
+# .secrets (keep out of version control)
+GITHUB_TOKEN=gho_YOUR_TOKEN_HERE
+```
+
+Run the workflow job locally, loading the secrets file:
+
+```bash
+act -W .github/workflows/build_docker_image.yml push -j build --verbose --secret-file .secrets
+```
+
+### Option B: PowerShell one‑liner (Windows)
+
+This extracts the token from gh auth status and sets GITHUB_TOKEN for the current session, then passes it to act as a secret.
+
+```powershell
+$g = (gh auth status --show-token 2>&1 | Out-String); if($g -match '(gh[a-z]*_[A-Za-z0-9_]+)'){ $t=$Matches[48]; $env:GITHUB_TOKEN=$t; $last4 = if($t.Length -ge 4){ $t.Substring($t.Length-4) } else { $t }; Write-Host "GITHUB_TOKEN set (masked): ***$last4" } else { Write-Host "No token found" }
+act -W .github/workflows/build_docker_image.yml push -j build --verbose -s GITHUB_TOKEN
+```
+
+### Option C: Bash/WSL one‑liners (Linux/macOS/WSL)
+
+These extract the token from gh auth status and set GITHUB_TOKEN for the current shell, then pass it to act as a secret.
+
+Simple extraction:
+
+```bash
+token=$(gh auth status --show-token 2>&1 | sed -n 's/.*Token: //p' | tr -d '\r'); if [ -n "$token" ]; then export GITHUB_TOKEN="$token"; last4=${token: -4}; printf 'GITHUB_TOKEN set (masked): ***%s\n' "$last4"; else echo "No token found"; fi
+act -W .github/workflows/build_docker_image.yml push -j build --verbose -s GITHUB_TOKEN
+```
+
+Robust regex extraction:
+
+```bash
+token=$(gh auth status --show-token 2>&1 | grep -oE 'gh[a-z]*_[A-Za-z0-9_]+' | head -n1); if [ -n "$token" ]; then export GITHUB_TOKEN="$token"; last4=${token: -4}; printf 'GITHUB_TOKEN set (masked): ***%s\n' "$last4"; else echo "No token found"; fi
+act -W .github/workflows/build_docker_image.yml push -j build --verbose -s GITHUB_TOKEN
+```
+
+### Notes
+
+- Never commit tokens; store tokens in secrets and local .secrets files excluded from version control.
+- Passing -s GITHUB_TOKEN tells act to use the environment variable or prompt securely, mapping it to secrets.GITHUB_TOKEN in the workflow.
+
+### Troubleshooting
+
+- If cloning public actions fails with authentication or network errors, verify container networking and retry.
+- For workflows that upload/download artifacts, pass a local path via --artifact-server-path to emulate the Actions runtime.
 
 ## Additional Notes
 

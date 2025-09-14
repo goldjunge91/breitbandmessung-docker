@@ -1,0 +1,10 @@
+{
+  "pull_request": {
+    "base": { "repo": { "name": "breitbandmessung-docker" } }
+  },
+  "repository": {
+    "name": "breitbandmessung-docker",
+    "full_name": "goldjunge91/breitbandmessung-docker",
+    "owner": { "login": "goldjunge91" }
+  }
+}
