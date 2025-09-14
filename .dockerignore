@@ -1,0 +1,8 @@
+# exclude VCS and large/non-needed files from build context
+.git
+.gitlab-ci.yml
+.github/
+README.md
+screenshots/
+breitbandmessung
+docker-compose*.yml

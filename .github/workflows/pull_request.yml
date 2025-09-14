@@ -9,7 +9,6 @@ env:
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
-
   build:
 
     runs-on: ubuntu-latest

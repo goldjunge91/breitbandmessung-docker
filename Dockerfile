@@ -2,11 +2,17 @@
 FROM jlesage/baseimage-gui:ubuntu-22.04-v4
 
 
+# Set noninteractive to avoid prompts and reduce layers by combining apt steps
+ENV DEBIAN_FRONTEND=noninteractive
 # Install packages
-RUN apt update && apt upgrade -yy && \
-  apt install -y apt-utils nano libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev libxss1 libasound2 wget xterm libnss3 locales xdotool xclip && \
-  locale-gen de_DE.UTF-8 && \
-  rm -rf /var/cache/apt /var/lib/apt/lists
+RUN apt-get update && \
+    apt-get upgrade -yy && \
+    apt install -y --no-install-recommends \
+    apt-utils nano libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev libxss1 libasound2 wget xterm libnss3 locales xdotool xclip && \
+    locale-gen de_DE.UTF-8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+    # rm -rf /var/cache/apt /var/lib/apt/lists
 
 # Generate and install favicons.
 # alternative logo: https://breitbandmessung.de/images/breitbandmessung-logo.png
@@ -26,13 +32,11 @@ RUN \
     set-cont-env LANG "de_DE.UTF-8" &&  \
     true
 
-
 # Set public environment variables.
 # Timezone can be overwritten via docker environment variable
 ENV TZ=Europe/Berlin
 # 1180x720 is absolute minimum
 ENV DISPLAY_WIDTH "1280"
 ENV DISPLAY_HEIGHT "768"
-
 
 VOLUME /config/xdg/config/Breitbandmessung

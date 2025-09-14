@@ -19,7 +19,7 @@ jobs:
       contents: read
       packages: write
 
-    if: github.repository == 'fabianbees/breitbandmessung-docker'
+    if: github.repository == 'goldjunge91/breitbandmessung-docker'
 
     steps:
       - name: Checkout Dockerfile
@@ -66,4 +66,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-

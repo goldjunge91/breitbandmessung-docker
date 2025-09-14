@@ -1,6 +1,5 @@
 # Breitbandmessung.de Docker Container
 
-
 Setup the container in these five steps:
 
 1. Deploy the container through one of the deployment options.
@@ -10,7 +9,6 @@ Setup the container in these five steps:
 
 3. (optional) Start the automation for automatic measurements. (see ➡️ [Automated Speedtesting](#automated-speedtesting))
 
-
 ## Tags
 
 | Registry | Image | Tag | Build |
@@ -18,11 +16,6 @@ Setup the container in these five steps:
 | [Docker-Hub](https://hub.docker.com/r/fabianbees/breitbandmessung/tags) | fabianbees/breitbandmessung | latest | ![pipeline status](https://gitlab.fabianbees.de/fabianbees/breitbandmessung-docker/badges/master/pipeline.svg) |
 | [Github (ghcr.io)](https://github.com/fabianbees/breitbandmessung-docker/pkgs/container/breitbandmessung-docker/versions?filters%5Bversion_type%5D=tagged) | ghcr.io/fabianbees/breitbandmessung-docker | latest | [![Build and Publish Docker Image](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=master)](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
 | [Github (ghcr.io)](https://github.com/fabianbees/breitbandmessung-docker/pkgs/container/breitbandmessung-docker/versions?filters%5Bversion_type%5D=tagged) | ghcr.io/fabianbees/breitbandmessung-docker | staging | [![Build and Publish Docker Image](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml/badge.svg?branch=staging)](https://github.com/fabianbees/breitbandmessung-docker/actions/workflows/build_docker_image.yml) |
-
-
-
-
-
 
 ## Deploy via docker run
 
@@ -39,7 +32,6 @@ docker run -d \
 
 Appdata for the Breitbandmessung Desktop App lives in the following directory (inside the container): ```/config/xdg/config/Breitbandmessung```. Therefore this directory should be mounted to a host directory.
 
-
 ## Deploy via docker-compose
 
 Deploy container via docker-compose v3 schema:
@@ -51,7 +43,6 @@ cd breitbandmessung-docker
 
 docker compose up
 ```
-
 
 ```yaml
 version: "3.8"
@@ -68,8 +59,6 @@ services:
     restart: unless-stopped
 ```
 
-
-
 ## Deploy as Portainer Stack
 
 <details>
@@ -78,38 +67,33 @@ services:
 <img src="screenshots/portainer-stack.png">
 </details>
 
-
-
-
 ## Automated Speedtesting
 
 ### Setup breitbandmessung.de
 
-1. Open your browser with the following url: http://ip-of-docker-host:5800
-
+1. Open your browser with the following url: <http://ip-of-docker-host:5800>
 
 2. Go throgh setup process, until you reach the following page:
 ![Screenshot1](screenshots/screenshot1.png)
 **DO NOT KLICK THE BUTTON "Messung durchführen" if you want to use the Speedtest automation script!**
 --> The automation script requires this exact screen to be shown for the automatic execution of a "Messkampagne".
 
-
 ### Start automation via GUI (easy method)
 
-3. To start the script, use the website on the exposed port and put the string 'RUN' in the clipboard. To stop the script, remove the string. You may need to do this twice (error unknown). After a maximum of 15 seconds you should see the screen in action. 
+3. To start the script, use the website on the exposed port and put the string 'RUN' in the clipboard. To stop the script, remove the string. You may need to do this twice (error unknown). After a maximum of 15 seconds you should see the screen in action.
 ![Screenshot1](screenshots/clipboard.png)
 
 ```⚠️ If the clipboard method doesn't work for you, please try the following alternate method first, before opening an issue!```
 
-
 ### Start automation via terminal (safe, fallback method)
 
 3. open a console (bash) to your docker container (```docker exec -it breitband-desktop bash```) and execute the following command inside this docker container:
+
 ```bash
 touch /RUN
 ```
-This creates a empty file called ```RUN``` in the root directory of the container, the automation script is looking for this file for knowing when the setup process has finished and speedtesting can start.
 
+This creates a empty file called ```RUN``` in the root directory of the container, the automation script is looking for this file for knowing when the setup process has finished and speedtesting can start.
 
 ### During the process
 
@@ -117,17 +101,13 @@ This creates a empty file called ```RUN``` in the root directory of the containe
 
 5. When all mesurements are done, the automation-script can be stopped by removing the ```/RUN``` file with the following command ```rm /RUN``` inside the docker container or change the content of the clipboard to something else than `RUN` via the GUI.
 
-
-
-
 ## Support for ARM-Architecture (Raspberry Pi)
 
 ```⚠️ The ARM-Architecture (➡️ also all Raspberry Pi's) is not supported! ⚠️```
 
 Support for this architecture currently cannot be provided, as the precompiled binary of the "breitbandmessung.de" program is not available for this architecture.
 
-You can try your luck and contact the developers of the official app (https://breitbandmessung.de/impressum ➡️ info@breitbandmessung.de) and ask them to publish a linux .deb package compiled for the aarch64 architecture.
-
+You can try your luck and contact the developers of the official app (<https://breitbandmessung.de/impressum> ➡️ <info@breitbandmessung.de>) and ask them to publish a linux .deb package compiled for the aarch64 architecture.
 
 ## Manually Building the Container (for development purposes)
 
@@ -144,7 +124,6 @@ cd breitbandmessung-docker
 
 docker build -t breitband:latest .
 ```
-
 
 ## Additional Notes
 
