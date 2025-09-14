@@ -31,6 +31,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=true
 
       # 3. Schritt: Docker Buildx einrichten (für Multi-Architektur-Builds)
       # Obwohl ARM nicht unterstützt wird, ist dies eine bewährte Vorgehensweise.
