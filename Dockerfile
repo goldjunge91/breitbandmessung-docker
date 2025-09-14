@@ -8,7 +8,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -yy && \
     apt install -y --no-install-recommends \
-    apt-utils nano libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev libxss1 libasound2 wget xterm libnss3 locales xdotool xclip && \
+    apt-utils nano libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev libxss1 libasound2 wget xterm libnss3 locales xdotool xclip ca-certificates && \
+    update-ca-certificates && \
     locale-gen de_DE.UTF-8 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
